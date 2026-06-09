@@ -17,6 +17,7 @@
     const fireflyCanvas = document.getElementById('fireflyCanvas');
     const curtainStage = document.getElementById('curtainStage');
     const curtainHint = document.getElementById('curtainHint');
+    const namaskarBeat = document.getElementById('namaskarBeat');
 
     let musicPlaying = false;
     let ytPlayer = null;
@@ -35,19 +36,6 @@
     function getBrideEvents() {
         const ev = (D && D.events) ? D.events : {};
         return [
-            {
-                key: 'pooja',
-                data: ev.pooja || {
-                    title: 'Pooja',
-                    titleEn: 'Pooja Ceremony',
-                    emoji: '🙏',
-                    date: '26th June 2026',
-                    time: '10:00 AM Onwards',
-                    calendarDate: '20260626',
-                    calendarTime: '100000'
-                },
-                featured: false
-            },
             { key: 'haldiMehndi', data: ev.haldiMehndi, featured: false },
             { key: 'wedding', data: ev.wedding, featured: true, showMap: true }
         ].filter(function (item) { return item.data; });
@@ -329,7 +317,7 @@
         let lastBurst = 0;
 
         document.addEventListener('click', function (e) {
-            if (e.target.closest('button, a, input, textarea, select, [role="button"], .fab, .dot, .curtain-stage')) {
+            if (e.target.closest('button, a, input, textarea, select, [role="button"], .fab, .dot, .portal-stage')) {
                 return;
             }
             const now = Date.now();
@@ -469,11 +457,41 @@
         els.forEach(function (el) { obs.observe(el); });
     }
 
-    /* ── Curtain opening ── */
+    /* ── Portal opening + namaskar ── */
+    function showNamaskar() {
+        if (!namaskarBeat) return;
+        namaskarBeat.classList.remove('hidden', 'fade-out');
+        void namaskarBeat.offsetWidth;
+        namaskarBeat.classList.add('visible');
+    }
+
+    function hideNamaskar(done) {
+        if (!namaskarBeat) {
+            if (done) done();
+            return;
+        }
+        namaskarBeat.classList.remove('visible');
+        namaskarBeat.classList.add('fade-out');
+        setTimeout(function () {
+            namaskarBeat.classList.remove('fade-out');
+            namaskarBeat.classList.add('hidden');
+            if (done) done();
+        }, reducedMotion() ? 100 : 900);
+    }
+
+    function revealLoader() {
+        loader.classList.remove('loader-waiting');
+        loader.classList.add('loader-revealed');
+        scheduleAutoOpen();
+    }
+
     function initCurtains() {
         if (!curtainStage || !loader) return;
 
-        const AUTO_MS = 700;
+        const AUTO_MS = 1400;
+        const PORTAL_NAMASKAR_MS = reducedMotion() ? 160 : 1100;
+        const NAMASKAR_HOLD_MS = reducedMotion() ? 700 : 2400;
+        const PORTAL_HIDE_MS = reducedMotion() ? 240 : 1900;
 
         function openCurtains(fromGesture) {
             if (curtainsDone) return;
@@ -491,14 +509,16 @@
 
             setTimeout(function () {
                 curtainStage.classList.add('done');
-                loader.classList.remove('loader-waiting');
-                loader.classList.add('loader-revealed');
-                scheduleAutoOpen();
-            }, reducedMotion() ? 100 : 700);
+                showNamaskar();
+            }, PORTAL_NAMASKAR_MS);
 
             setTimeout(function () {
                 curtainStage.style.display = 'none';
-            }, reducedMotion() ? 200 : 850);
+            }, PORTAL_HIDE_MS);
+
+            setTimeout(function () {
+                hideNamaskar(revealLoader);
+            }, PORTAL_NAMASKAR_MS + NAMASKAR_HOLD_MS);
         }
 
         curtainStage.addEventListener('touchstart', function () {
@@ -644,9 +664,7 @@
             list.querySelectorAll('.event-card').forEach(function (c) {
                 c.classList.add('expanded');
             });
-            const pooja = list.querySelector('[data-event="pooja"]');
             const wedding = list.querySelector('.event-card.featured');
-            if (pooja) pooja.classList.add('spotlight');
             if (wedding) wedding.classList.add('spotlight');
         }, 1200);
 
@@ -659,7 +677,7 @@
         $('venueCity').textContent = D.wedding.city + ', ' + D.wedding.state + ' ' + D.wedding.pincode;
         $('venueDate').textContent = D.wedding.dayLabel;
         $('venueTime').textContent = D.wedding.time;
-        $('heroDate').textContent = D.wedding.dayLabel + ' · ' + D.wedding.city;
+        $('heroDate').textContent = D.wedding.dayLabel + ' · ' + (D.wedding.heroLocation || D.wedding.city);
         $('footerDate').textContent = D.wedding.dayLabel;
     }
 
@@ -714,10 +732,7 @@
             time = D.events.haldiMehndi.calendarTime;
             location = '';
         } else {
-            title = 'Pooja — ' + D.couple.bride.shortName + ' & ' + D.couple.groom.shortName;
-            date = D.events.pooja.calendarDate;
-            time = D.events.pooja.calendarTime;
-            location = '';
+            return;
         }
 
         const endTime = addHoursToTime(time, 3);

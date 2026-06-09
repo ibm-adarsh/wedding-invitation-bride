@@ -22,6 +22,7 @@ window.WEDDING_DATA = {
     venueName: 'Laxmi Narayan Vatika',
     venueAddress: 'Anjaan Shaheed Road, Shop no.14, Shahganj',
     city: 'Jaunpur',
+    heroLocation: 'Shahganj, Jaunpur',
     state: 'Uttar Pradesh',
     pincode: '223101',
     fullVenue: 'Laxmi Narayan Vatika, Jaunpur',
@@ -33,15 +34,6 @@ window.WEDDING_DATA = {
     mapsUrl: 'https://maps.app.goo.gl/sqXq3p8eudzvBz9U7'
   },
   events: {
-    pooja: {
-      title: 'Pooja',
-      titleEn: 'Pooja Ceremony',
-      emoji: '🙏',
-      date: '26th June 2026',
-      time: '10:00 AM Onwards',
-      calendarDate: '20260626',
-      calendarTime: '100000'
-    },
     haldiMehndi: {
       title: 'Haldi & Mehndi',
       titleEn: 'Haldi & Mehndi Celebrations',

@@ -13,7 +13,7 @@
     <meta property="og:image" content="https://ibm-adarsh.github.io/wedding-invitation-bride/assets/ganesha-neon.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="icon" href="assets/ganesha-neon.jpg" type="image/jpeg">
-    <link rel="stylesheet" href="styles.css?v=live">
+    <link rel="stylesheet" href="styles.css?v=sacred-chain">
     <script src="https://www.youtube.com/iframe_api" async></script>
 </head>
 <body>
@@ -37,32 +37,27 @@
         <span class="diya">🪔</span><span class="diya">✨</span><span class="diya">🌸</span>
     </div>
 
-    <div id="curtainStage" class="curtain-stage" role="button" tabindex="0" aria-label="Tap to open invitation">
-        <div class="curtain-valance" aria-hidden="true"></div>
-        <div class="curtain curtain-left">
-            <div class="curtain-fold"></div>
-            <div class="curtain-fold"></div>
-            <div class="curtain-fold"></div>
-            <div class="curtain-fold"></div>
-            <div class="curtain-fold"></div>
+    <div id="curtainStage" class="portal-stage" role="button" tabindex="0" aria-label="Tap to open invitation">
+        <div class="portal-backdrop" aria-hidden="true"></div>
+        <div class="portal-panel portal-panel-left" aria-hidden="true"></div>
+        <div class="portal-panel portal-panel-right" aria-hidden="true"></div>
+        <div class="portal-seam" aria-hidden="true"></div>
+        <div class="portal-ring" aria-hidden="true"></div>
+        <div class="portal-center">
+            <p class="portal-om devanagari">॥ ॐ ॥</p>
+            <h2 class="portal-names">Anjali <span>&</span> Adarsh</h2>
+            <p class="portal-sub">A Wedding Celebration</p>
+            <p class="portal-hint" id="curtainHint">Tap to open · Opening soon…</p>
+            <div class="portal-progress" aria-hidden="true"><span id="curtainProgress"></span></div>
         </div>
-        <div class="curtain curtain-right">
-            <div class="curtain-fold"></div>
-            <div class="curtain-fold"></div>
-            <div class="curtain-fold"></div>
-            <div class="curtain-fold"></div>
-            <div class="curtain-fold"></div>
-        </div>
-        <div class="curtain-center">
-            <p class="curtain-om devanagari">॥ ॐ ॥</p>
-            <h2 class="curtain-names">Anjali <span>&</span> Adarsh</h2>
-            <p class="curtain-sub">A Wedding Celebration</p>
-            <p class="curtain-hint" id="curtainHint">Tap to open · Opening soon…</p>
-            <div class="curtain-progress" aria-hidden="true"><span id="curtainProgress"></span></div>
-        </div>
-        <div class="curtain-tassels" aria-hidden="true">
-            <span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div id="namaskarBeat" class="namaskar-beat hidden" aria-live="polite">
+        <div class="namaskar-glow" aria-hidden="true"></div>
+        <div class="namaskar-inner">
+            <span class="namaskar-icon" aria-hidden="true">🙏</span>
+            <p class="namaskar-text devanagari">नमस्कार</p>
+            <p class="namaskar-sub devanagari">जोड़े हुए हाथ, आपका हार्दिक स्वागत है</p>
         </div>
     </div>
 
@@ -83,7 +78,7 @@
             </div>
         </div>
         <p class="loader-text" id="loaderText">A celebration awaits you</p>
-        <p class="loader-opening" id="loaderOpening" hidden aria-live="polite">Opening with music…</p>
+        <p class="loader-opening devanagari" id="loaderOpening" hidden aria-live="polite">॥ आपका निमंत्रण खुल रहा है ॥</p>
         </div>
     </div>
 
@@ -115,8 +110,8 @@
                 <div class="vakratunda-ornament top">✦ ❋ ✦</div>
                 <p class="vakratunda-label devanagari">प्रार्थना और कृतज्ञता</p>
                 <p class="vakratunda-intro devanagari">
-                    जोड़े हुए हाथों और कृतज्ञ हृदय से, हम इस पावन वैवाहिक उत्सव के शुभारंभ से पूर्व
-                    श्री गणेश जी का आशीर्वाद प्राप्त करना चाहते हैं।
+                    <span class="vakratunda-line">जोड़े हुए हाथों और कृतज्ञ हृदय से, हम इस पावन वैवाहिक उत्सव के शुभारंभ से पूर्व</span>
+                    <span class="vakratunda-line">श्री गणेश जी का आशीर्वाद प्राप्त करना चाहते हैं।</span>
                 </p>
                 <blockquote class="vakratunda-mantra devanagari">
                     <span class="mantra-line">वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ ।</span>
@@ -274,6 +269,6 @@
 
     <script src="site-url.js"></script>
     <script src="wedding-data.js"></script>
-    <script src="script.js?v=live"></script>
+    <script src="script.js?v=namaskar-hold"></script>
 </body>
 </html>
