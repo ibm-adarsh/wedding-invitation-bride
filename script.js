@@ -16,7 +16,7 @@
     const sparkleCanvas = document.getElementById('sparkleCanvas');
     const fireflyCanvas = document.getElementById('fireflyCanvas');
     const curtainStage = document.getElementById('curtainStage');
-    const curtainHint = document.getElementById('curtainHint');
+    const portalOpenBtn = document.getElementById('portalOpenBtn');
     const namaskarBeat = document.getElementById('namaskarBeat');
 
     let musicPlaying = false;
@@ -31,7 +31,6 @@
     let autoOpenTimer = null;
     let lastSec = -1;
     let curtainsDone = false;
-    let curtainTimer = null;
 
     function getBrideEvents() {
         const ev = (D && D.events) ? D.events : {};
@@ -433,15 +432,7 @@
         });
     }
 
-    function initCurtainProgress() {
-        const progress = $('curtainProgress');
-        if (!progress || reducedMotion()) return;
-        progress.style.width = '0%';
-        requestAnimationFrame(function () {
-            progress.style.width = '100%';
-        });
-    }
-
+    /* ── Reveal on scroll ── */
     function initReveal() {
         const els = document.querySelectorAll('.reveal');
         const obs = new IntersectionObserver(function (entries) {
@@ -488,7 +479,6 @@
     function initCurtains() {
         if (!curtainStage || !loader) return;
 
-        const AUTO_MS = 1400;
         const PORTAL_NAMASKAR_MS = reducedMotion() ? 160 : 1100;
         const NAMASKAR_HOLD_MS = reducedMotion() ? 700 : 2400;
         const PORTAL_HIDE_MS = reducedMotion() ? 240 : 1900;
@@ -497,10 +487,13 @@
             if (curtainsDone) return;
             if (fromGesture) unlockMusicFromGesture();
             curtainsDone = true;
-            if (curtainTimer) clearTimeout(curtainTimer);
+
+            if (portalOpenBtn) {
+                portalOpenBtn.disabled = true;
+                portalOpenBtn.classList.add('is-opening');
+            }
 
             curtainStage.classList.add('opening', 'opened');
-            if (curtainHint) curtainHint.textContent = 'Welcome…';
 
             burstConfetti();
 
@@ -518,32 +511,29 @@
             }, PORTAL_NAMASKAR_MS + NAMASKAR_HOLD_MS);
         }
 
-        curtainStage.addEventListener('touchstart', function () {
-            unlockMusicFromGesture();
-            openCurtains(true);
-        }, { passive: true });
-
-        curtainStage.addEventListener('click', function () {
-            unlockMusicFromGesture();
-            openCurtains(true);
-        });
-        curtainStage.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') {
+        function onPortalOpen(e) {
+            if (e) {
                 e.preventDefault();
-                unlockMusicFromGesture();
-                openCurtains(true);
+                e.stopPropagation();
             }
-        });
+            unlockMusicFromGesture();
+            openCurtains(true);
+        }
+
+        if (portalOpenBtn) {
+            portalOpenBtn.addEventListener('click', onPortalOpen);
+            portalOpenBtn.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    onPortalOpen(e);
+                }
+            });
+        }
 
         if (reducedMotion()) {
             openCurtains(false);
-        } else {
-            initCurtainProgress();
-            curtainTimer = setTimeout(function () { openCurtains(false); }, AUTO_MS);
         }
 
         attachMusicUnmuteOnInteraction();
-        attachOpeningTapForMusic(curtainStage);
         attachOpeningTapForMusic(loader);
         attachOpeningTapForMusic(namaskarBeat);
     }
