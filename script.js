@@ -25,8 +25,8 @@
     let musicStartRequested = false;
     let musicUnmuteListenersAttached = false;
     let userGestureForMusic = false;
+    let pendingMusicFromGesture = false;
     let musicRetryInterval = null;
-    let musicAutoUnmuteTimer = null;
     let invitationOpened = false;
     let autoOpenTimer = null;
     let lastSec = -1;
@@ -495,11 +495,8 @@
 
         function openCurtains(fromGesture) {
             if (curtainsDone) return;
+            if (fromGesture) unlockMusicFromGesture();
             curtainsDone = true;
-            if (fromGesture) {
-                userGestureForMusic = true;
-                startBackgroundMusic(true);
-            }
             if (curtainTimer) clearTimeout(curtainTimer);
 
             curtainStage.classList.add('opening', 'opened');
@@ -522,15 +519,18 @@
         }
 
         curtainStage.addEventListener('touchstart', function () {
+            unlockMusicFromGesture();
             openCurtains(true);
         }, { passive: true });
 
         curtainStage.addEventListener('click', function () {
+            unlockMusicFromGesture();
             openCurtains(true);
         });
         curtainStage.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
+                unlockMusicFromGesture();
                 openCurtains(true);
             }
         });
@@ -541,6 +541,11 @@
             initCurtainProgress();
             curtainTimer = setTimeout(function () { openCurtains(false); }, AUTO_MS);
         }
+
+        attachMusicUnmuteOnInteraction();
+        attachOpeningTapForMusic(curtainStage);
+        attachOpeningTapForMusic(loader);
+        attachOpeningTapForMusic(namaskarBeat);
     }
 
     function scheduleAutoOpen() {
@@ -895,20 +900,28 @@
                     controls: 0,
                     modestbranding: 1,
                     playsinline: 1,
+                    enablejsapi: 1,
                     rel: 0
                 },
                 events: {
                     onReady: function () {
                         ytReady = true;
                         musicStartRequested = true;
-                        playMusic({ muted: true });
+                        if (pendingMusicFromGesture || userGestureForMusic) {
+                            playMusic({ muted: false });
+                        } else {
+                            playMusic({ muted: true });
+                            attachMusicUnmuteOnInteraction();
+                        }
                         startMusicRetryLoop();
                     },
                     onStateChange: function (event) {
                         if (event.data === YT.PlayerState.PLAYING) {
                             if (!musicPlaying) setMusicPlayingState(true);
-                            if (invitationOpened || (loader && loader.classList.contains('loader-revealed'))) {
+                            if (pendingMusicFromGesture || userGestureForMusic) {
                                 tryUnmuteMusic();
+                            } else if (invitationOpened || (loader && loader.classList.contains('loader-revealed'))) {
+                                attachMusicUnmuteOnInteraction();
                             }
                         }
                         if (event.data === YT.PlayerState.ENDED && ytPlayer && ytPlayer.seekTo) {
@@ -947,17 +960,34 @@
         return true;
     }
 
-    function stopAutoUnmuteLoop() {
-        if (musicAutoUnmuteTimer) {
-            clearInterval(musicAutoUnmuteTimer);
-            musicAutoUnmuteTimer = null;
-        }
-    }
-
     function isMusicAudible() {
         if (!ytPlayer || !isYouTubePlaying()) return false;
         if (typeof ytPlayer.isMuted === 'function' && ytPlayer.isMuted()) return false;
         return true;
+    }
+
+    function unlockMusicFromGesture() {
+        userGestureForMusic = true;
+        pendingMusicFromGesture = true;
+        musicStartRequested = true;
+
+        if (ytReady && ytPlayer && typeof ytPlayer.playVideo === 'function') {
+            playMusic({ muted: false });
+            if (isYouTubePlaying()) setMusicPlayingState(true);
+        }
+
+        startMusicRetryLoop();
+    }
+
+    function attachOpeningTapForMusic(el) {
+        if (!el) return;
+
+        function onTap() {
+            unlockMusicFromGesture();
+        }
+
+        el.addEventListener('pointerdown', onTap, { passive: true });
+        el.addEventListener('touchstart', onTap, { passive: true });
     }
 
     function tryUnmuteMusic() {
@@ -970,38 +1000,13 @@
         return isMusicAudible();
     }
 
-    function startAutoUnmuteLoop() {
-        if (musicAutoUnmuteTimer || userGestureForMusic) return;
-
-        let attempts = 0;
-        musicAutoUnmuteTimer = setInterval(function () {
-            attempts++;
-            if (attempts > 30) {
-                stopAutoUnmuteLoop();
-                if (!isMusicAudible()) attachMusicUnmuteOnInteraction();
-                return;
-            }
-
-            if (isMusicAudible()) {
-                userGestureForMusic = true;
-                setMusicPlayingState(true);
-                stopMusicRetryLoop();
-                stopAutoUnmuteLoop();
-                return;
-            }
-
-            if (!isYouTubePlaying()) {
-                playMusic({ muted: true });
-            }
-            tryUnmuteMusic();
-        }, 450);
-    }
-
     function beginInvitationMusic() {
         musicStartRequested = true;
-        tryUnmuteMusic();
+        if (userGestureForMusic || pendingMusicFromGesture) {
+            tryUnmuteMusic();
+        }
         startMusicRetryLoop();
-        startAutoUnmuteLoop();
+        if (!isMusicAudible()) attachMusicUnmuteOnInteraction();
     }
 
     function stopMusicRetryLoop() {
@@ -1018,11 +1023,10 @@
                 userGestureForMusic = true;
                 setMusicPlayingState(true);
                 stopMusicRetryLoop();
-                stopAutoUnmuteLoop();
                 return;
             }
             attemptBackgroundMusic();
-            tryUnmuteMusic();
+            if (userGestureForMusic || pendingMusicFromGesture) tryUnmuteMusic();
         }, 600);
         setTimeout(stopMusicRetryLoop, 45000);
     }
@@ -1032,41 +1036,28 @@
 
         if (!ytReady || !ytPlayer || typeof ytPlayer.playVideo !== 'function') return;
 
-        const useMuted = !userGestureForMusic;
-        playMusic({ muted: useMuted });
+        if (userGestureForMusic || pendingMusicFromGesture) {
+            playMusic({ muted: false });
+            if (isYouTubePlaying()) {
+                setMusicPlayingState(true);
+                stopMusicRetryLoop();
+            }
+            return;
+        }
+
+        playMusic({ muted: true });
 
         setTimeout(function () {
             if (isYouTubePlaying()) {
                 setMusicPlayingState(true);
-                if (useMuted && !invitationOpened) {
-                    return;
-                }
-                if (useMuted && !isMusicAudible()) {
-                    startAutoUnmuteLoop();
-                } else if (!useMuted) {
-                    userGestureForMusic = true;
-                    stopMusicRetryLoop();
-                }
-                return;
-            }
-
-            if (!useMuted) {
-                playMusic({ muted: true });
-                setTimeout(function () {
-                    if (isYouTubePlaying()) {
-                        setMusicPlayingState(true);
-                        startAutoUnmuteLoop();
-                    }
-                }, 400);
+                if (!isMusicAudible()) attachMusicUnmuteOnInteraction();
             }
         }, 350);
     }
 
     function startBackgroundMusic(fromUserGesture) {
-        if (fromUserGesture) userGestureForMusic = true;
-        musicStartRequested = true;
-        attemptBackgroundMusic();
-        startMusicRetryLoop();
+        if (fromUserGesture) unlockMusicFromGesture();
+        else attemptBackgroundMusic();
     }
 
     function attachMusicUnmuteOnInteraction() {
@@ -1074,19 +1065,21 @@
         musicUnmuteListenersAttached = true;
 
         function unmute() {
-            userGestureForMusic = true;
-            tryUnmuteMusic();
-            setMusicPlayingState(true);
-            stopMusicRetryLoop();
-            stopAutoUnmuteLoop();
-            document.removeEventListener('click', unmute);
-            document.removeEventListener('touchstart', unmute);
-            document.removeEventListener('scroll', unmute);
-            document.removeEventListener('keydown', unmute);
+            unlockMusicFromGesture();
+            if (isMusicAudible()) {
+                setMusicPlayingState(true);
+                stopMusicRetryLoop();
+                document.removeEventListener('pointerdown', unmute, true);
+                document.removeEventListener('touchstart', unmute, true);
+                document.removeEventListener('click', unmute, true);
+                document.removeEventListener('scroll', unmute, true);
+                document.removeEventListener('keydown', unmute, true);
+            }
         }
 
+        document.addEventListener('pointerdown', unmute, { capture: true, passive: true });
+        document.addEventListener('touchstart', unmute, { capture: true, passive: true });
         document.addEventListener('click', unmute, { passive: true });
-        document.addEventListener('touchstart', unmute, { passive: true });
         document.addEventListener('scroll', unmute, { passive: true });
         document.addEventListener('keydown', unmute, { passive: true });
     }
@@ -1101,12 +1094,8 @@
             ytPlayer.pauseVideo();
             setMusicPlayingState(false);
         } else {
-            userGestureForMusic = true;
-            musicStartRequested = true;
-            playMusic({ muted: false });
-            setTimeout(function () {
-                if (isYouTubePlaying()) setMusicPlayingState(true);
-            }, 300);
+            unlockMusicFromGesture();
+            if (isYouTubePlaying()) setMusicPlayingState(true);
         }
     }
 
