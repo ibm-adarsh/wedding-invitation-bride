@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Anjali & Adarsh — A Celebration of Love</title>
+    <meta name="description" content="You're warmly invited to celebrate the wedding of Anjali Yadav & Adarsh Kumar Yadav — 28th June 2026, Jaunpur.">
+    <meta name="theme-color" content="#1a0814">
+    <meta property="og:title" content="Anjali & Adarsh — Wedding Invitation">
+    <meta property="og:description" content="Join us in celebrating a union of hearts — 28th June 2026, Jaunpur.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ibm-adarsh.github.io/wedding-invitation-bride/">
+    <meta property="og:image" content="https://ibm-adarsh.github.io/wedding-invitation-bride/assets/ganesha-neon.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="assets/ganesha-neon.jpg" type="image/jpeg">
+    <link rel="stylesheet" href="styles.css?v=live">
+    <script src="https://www.youtube.com/iframe_api" async></script>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to invitation</a>
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+    <div class="petal-rain" aria-hidden="true">
+        <span class="petal">🌸</span><span class="petal">🌺</span><span class="petal">✿</span>
+        <span class="petal">🌸</span><span class="petal">🌺</span><span class="petal">✿</span>
+        <span class="petal">🌸</span><span class="petal">🌺</span><span class="petal">✿</span>
+        <span class="petal">🌸</span><span class="petal">🌺</span>
+    </div>
+    <canvas id="sparkleCanvas" class="sparkle-canvas" aria-hidden="true"></canvas>
+    <canvas id="fireflyCanvas" class="firefly-canvas" aria-hidden="true"></canvas>
+    <div class="aurora" aria-hidden="true"></div>
+    <div class="mandala-bg" aria-hidden="true">
+        <svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.3"/><circle cx="100" cy="100" r="70" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.25"/><circle cx="100" cy="100" r="50" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.2"/><g opacity="0.35"><line x1="100" y1="10" x2="100" y2="190"/><line x1="10" y1="100" x2="190" y2="100"/><line x1="36" y1="36" x2="164" y2="164"/><line x1="164" y1="36" x2="36" y2="164"/></g></svg>
+    </div>
+
+    <div class="floating-deco" aria-hidden="true">
+        <span class="diya">🪔</span><span class="diya">✨</span><span class="diya">🌺</span>
+        <span class="diya">🪔</span><span class="diya">✨</span><span class="diya">🌸</span>
+    </div>
+
+    <div id="curtainStage" class="curtain-stage" role="button" tabindex="0" aria-label="Tap to open invitation">
+        <div class="curtain-valance" aria-hidden="true"></div>
+        <div class="curtain curtain-left">
+            <div class="curtain-fold"></div>
+            <div class="curtain-fold"></div>
+            <div class="curtain-fold"></div>
+            <div class="curtain-fold"></div>
+            <div class="curtain-fold"></div>
+        </div>
+        <div class="curtain curtain-right">
+            <div class="curtain-fold"></div>
+            <div class="curtain-fold"></div>
+            <div class="curtain-fold"></div>
+            <div class="curtain-fold"></div>
+            <div class="curtain-fold"></div>
+        </div>
+        <div class="curtain-center">
+            <p class="curtain-om devanagari">॥ ॐ ॥</p>
+            <h2 class="curtain-names">Anjali <span>&</span> Adarsh</h2>
+            <p class="curtain-sub">A Wedding Celebration</p>
+            <p class="curtain-hint" id="curtainHint">Tap to open · Opening soon…</p>
+            <div class="curtain-progress" aria-hidden="true"><span id="curtainProgress"></span></div>
+        </div>
+        <div class="curtain-tassels" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+
+    <div id="loader" class="loader loader-waiting">
+        <div class="loader-content">
+        <div class="loader-rings" aria-hidden="true">
+            <span class="ring ring-1"></span>
+            <span class="ring ring-2"></span>
+            <span class="ring ring-3"></span>
+            <span class="ring ring-4"></span>
+        </div>
+        <p class="loader-shloka devanagari fade-shloka">॥ श्री गणेशाय नमः ॥</p>
+        <div class="loader-ganesha neon-frame">
+            <div class="neon-orbit"></div>
+            <div class="neon-orbit neon-orbit-2"></div>
+            <div class="ganesha-circle ganesha-circle-sm">
+                <img id="loaderGanesha" src="" alt="Shree Ganesh">
+            </div>
+        </div>
+        <p class="loader-text" id="loaderText">A celebration awaits you</p>
+        <p class="loader-opening" id="loaderOpening" hidden aria-live="polite">Opening with music…</p>
+        </div>
+    </div>
+
+    <nav class="dot-nav hidden" id="dotNav" aria-label="Sections">
+        <button type="button" data-section="hero" class="dot active" aria-label="Home"><span class="dot-label">Home</span></button>
+        <button type="button" data-section="couple" class="dot" aria-label="Couple"><span class="dot-label">Couple</span></button>
+        <button type="button" data-section="events" class="dot" aria-label="Events"><span class="dot-label">Events</span></button>
+        <button type="button" data-section="venue" class="dot" aria-label="Venue"><span class="dot-label">Venue</span></button>
+        <button type="button" data-section="rsvp" class="dot" aria-label="RSVP"><span class="dot-label">RSVP</span></button>
+    </nav>
+
+    <main id="main" class="main hidden">
+        <section class="section top-ganesha reveal" id="topGanesha" aria-label="श्री गणेश">
+            <p class="shloka top-shloka devanagari">॥ श्री गणेशाय नमः ॥</p>
+            <figure class="ganesha-wrap neon-frame">
+                <div class="ganesha-glow"></div>
+                <div class="ganesha-glow ganesha-glow-2"></div>
+                <div class="neon-orbit"></div>
+                <div class="neon-orbit neon-orbit-2"></div>
+                <div class="ganesha-ring"></div>
+                <div class="ganesha-circle">
+                    <img id="mainGanesha" src="" alt="Shree Ganesh" loading="eager">
+                </div>
+            </figure>
+        </section>
+
+        <section class="section vakratunda reveal" id="prayer" aria-label="श्री गणेश प्रार्थना">
+            <div class="vakratunda-card">
+                <div class="vakratunda-ornament top">✦ ❋ ✦</div>
+                <p class="vakratunda-label devanagari">प्रार्थना और कृतज्ञता</p>
+                <p class="vakratunda-intro devanagari">
+                    जोड़े हुए हाथों और कृतज्ञ हृदय से, हम इस पावन वैवाहिक उत्सव के शुभारंभ से पूर्व
+                    श्री गणेश जी का आशीर्वाद प्राप्त करना चाहते हैं।
+                </p>
+                <blockquote class="vakratunda-mantra devanagari">
+                    <span class="mantra-line">वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ ।</span>
+                    <span class="mantra-line">निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥</span>
+                </blockquote>
+                <p class="vakratunda-closing devanagari">
+                    ✨ आपका स्नेह, आशीर्वाद और शुभकामनाएँ हमारे लिए अत्यंत मूल्यवान हैं। ✨
+                </p>
+                <div class="vakratunda-ornament bottom">🙏</div>
+            </div>
+        </section>
+
+        <header class="hero reveal" id="hero" data-section="hero">
+            <div class="hero-badge pulse-badge">Wedding Invitation</div>
+            <p class="hero-from">With hearts full of joy, we invite you</p>
+            <h1 class="hero-names">
+                <span class="name-line name-bride"><span class="char-wrap" id="nameBride"></span></span>
+                <span class="ampersand glow-amp">&</span>
+                <span class="name-line name-groom"><span class="char-wrap" id="nameGroom"></span></span>
+            </h1>
+            <p class="hero-date" id="heroDate"></p>
+            <p class="hero-save devanagari" id="heroSave">॥ शुभ विवाह ॥</p>
+
+            <div class="countdown glow-countdown" id="countdown" aria-live="polite">
+                <div class="countdown-item" data-unit="days">
+                    <span class="count-num" id="cdDays">--</span>
+                    <small>Days</small>
+                </div>
+                <div class="countdown-sep blink">:</div>
+                <div class="countdown-item" data-unit="hours">
+                    <span class="count-num" id="cdHours">--</span>
+                    <small>Hours</small>
+                </div>
+                <div class="countdown-sep blink">:</div>
+                <div class="countdown-item" data-unit="mins">
+                    <span class="count-num" id="cdMins">--</span>
+                    <small>Mins</small>
+                </div>
+                <div class="countdown-sep blink">:</div>
+                <div class="countdown-item" data-unit="secs">
+                    <span class="count-num" id="cdSecs">--</span>
+                    <small>Secs</small>
+                </div>
+            </div>
+
+            <button type="button" class="scroll-hint" id="scrollHint" aria-label="Scroll to explore invitation">
+                <span class="scroll-hint-text">Explore the celebration</span>
+                <span class="scroll-hint-arrow" aria-hidden="true">↓</span>
+            </button>
+        </header>
+
+        <div class="section-divider reveal" aria-hidden="true"><span>❋</span></div>
+
+        <section class="section opening reveal" id="opening">
+            <p class="opening-text">
+                We, the family of <strong>Anjali Yadav</strong>, request the honour of your presence
+                as we celebrate her union with <strong>Adarsh Kumar Yadav</strong>.
+            </p>
+        </section>
+
+        <div class="section-divider reveal" aria-hidden="true"><span>❋</span></div>
+
+        <section class="section couple reveal" id="couple" data-section="couple">
+            <h2 class="section-title"><span class="title-deco spin-deco">✦</span> The Couple <span class="title-deco spin-deco">✦</span></h2>
+            <div class="couple-grid">
+                <article class="person-card person-bride tilt-card slide-left">
+                    <div class="card-shine"></div>
+                    <div class="person-badge">Bride</div>
+                    <h3 id="brideName"></h3>
+                    <p class="person-parents" id="brideParents"></p>
+                </article>
+                <div class="couple-connector" id="coupleHeart" role="button" tabindex="0" aria-label="Tap for love">
+                    <span class="couple-heart-ring" aria-hidden="true"></span>
+                    <span class="couple-heart-icon">💕</span>
+                </div>
+                <article class="person-card person-groom tilt-card slide-right">
+                    <div class="card-shine"></div>
+                    <div class="person-badge">Groom</div>
+                    <h3 id="groomName"></h3>
+                    <p class="person-parents" id="groomParents"></p>
+                </article>
+            </div>
+        </section>
+
+        <div class="section-divider reveal" aria-hidden="true"><span>❋</span></div>
+
+        <section class="section events reveal" id="events" data-section="events">
+            <h2 class="section-title"><span class="title-deco spin-deco">✦</span> Celebrations <span class="title-deco spin-deco">✦</span></h2>
+            <p class="section-sub">Tap each moment to explore</p>
+            <div class="timeline" id="eventList"></div>
+        </section>
+
+        <div class="section-divider reveal" aria-hidden="true"><span>❋</span></div>
+
+        <section class="section venue reveal" id="venue" data-section="venue">
+            <h2 class="section-title"><span class="title-deco spin-deco">✦</span> Wedding Venue <span class="title-deco spin-deco">✦</span></h2>
+            <div class="venue-card tilt-card">
+                <div class="venue-pulse"></div>
+                <div class="venue-icon bounce">📍</div>
+                <h3 id="venueName"></h3>
+                <p id="venueAddress"></p>
+                <p id="venueCity"></p>
+                <p class="venue-time"><strong id="venueDate"></strong> · <span id="venueTime"></span></p>
+                <div class="venue-actions">
+                    <button type="button" class="btn-map ripple" id="mapBtn">Open in Google Maps</button>
+                    <button type="button" class="btn-map btn-map-alt ripple" id="venueCalBtn">📅 Add to Calendar</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider reveal" aria-hidden="true"><span>❋</span></div>
+
+        <section class="section rsvp reveal" id="rsvp" data-section="rsvp">
+            <h2 class="section-title"><span class="title-deco spin-deco">✦</span> RSVP <span class="title-deco spin-deco">✦</span></h2>
+            <p class="rsvp-deadline">Kindly confirm by <strong id="rsvpDeadline"></strong></p>
+            <div class="rsvp-contact-card" id="rsvpContactCard">
+                <p class="rsvp-contact-main" id="rsvpContactMain"></p>
+                <span class="rsvp-phone" id="rsvpPhone"></span>
+            </div>
+            <div class="rsvp-actions" id="rsvpActions">
+                <button type="button" class="btn-whatsapp ripple" id="whatsappBtn">
+                    <span>💬</span> WhatsApp
+                </button>
+                <button type="button" class="btn-call ripple" id="callBtn">
+                    <span>📞</span> Call
+                </button>
+            </div>
+            <div class="friends-note hidden" id="friendsNote"></div>
+        </section>
+
+        <footer class="footer reveal">
+            <div class="footer-flourish">❀ ❀ ❀</div>
+            <p class="footer-quote">"Two souls, one beautiful journey."</p>
+            <p class="footer-names">Anjali & Adarsh</p>
+            <p class="footer-date" id="footerDate"></p>
+            <div class="footer-blessing" aria-live="polite">
+                <span class="blessing-icon">🪷</span>
+                <p class="blessing-text" id="blessingText"></p>
+            </div>
+        </footer>
+    </main>
+
+    <div class="fab-group hidden" id="fabGroup">
+        <button type="button" id="shareBtn" class="fab fab-share" title="Share invitation" aria-label="Share invitation">🔗</button>
+        <button type="button" id="musicBtn" class="fab fab-music" title="Music" aria-label="Toggle music">
+            <span class="fab-icon">🎵</span>
+            <span class="fab-wave" aria-hidden="true"></span>
+        </button>
+        <button type="button" id="scrollTopBtn" class="fab fab-top fab-hidden" title="Back to top" aria-label="Back to top">↑</button>
+    </div>
+
+    <div id="musicFrame" class="music-frame" aria-hidden="true"></div>
+    <div id="confettiRoot" class="confetti-root" aria-hidden="true"></div>
+    <div class="toast-root" id="toastRoot" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="site-url.js"></script>
+    <script src="wedding-data.js"></script>
+    <script src="script.js?v=live"></script>
+</body>
+</html>
